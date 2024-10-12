@@ -9,7 +9,7 @@ document.addEventListener("click", (e) => {
 	urlRoute(e);
 });
 
-const urlRoute = (/** @type {Event} */ event) => {
+const urlRoute = (event: Event) => {
 	if (event.target instanceof HTMLAnchorElement) {
 		window.history.pushState({}, "", event.target.href);
 		event.preventDefault();

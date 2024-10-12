@@ -1,12 +1,13 @@
 {
 	"compilerOptions": {
-		"outFile": "",
+		// "outFile": "",
+		"outDir": "srcs/js",
 		"checkJs": true,
 		"allowJs": true,
 		"target": "ES2022",
-		"module": "System",
+		"module": "ES2022",
 		"paths": {},
 		"types": ["react"]
 	},
-	"include": ["srcs/js/*"]
+	"include": ["srcs/ts/*"]
 }

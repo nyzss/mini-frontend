@@ -1,19 +1,12 @@
-/**
- * @typedef {Object} CustomHTMLElement
- * @property {function(string, string): CustomHTMLElement} [attr] - Method to set an attribute
- * @property {function(string): CustomHTMLElement} [content] - Method to set an attribute
- */
+import { HTMLAttributes } from "react";
+import { Routes, TagElement } from "./types";
 
-/**
- * @param {keyof HTMLElementTagNameMap} name
- * @param {import("react").HTMLAttributes} [attributes={}]
- * @param  {...HTMLElement} child
- */
-const tag = (name, attributes = {}, ...child) => {
-	/**
-	 * @type {HTMLElement & CustomHTMLElement}
-	 */
-	const result = document.createElement(name);
+const tag = (
+	name: keyof HTMLElementTagNameMap,
+	attributes: HTMLAttributes<HTMLElementTagNameMap> = {},
+	...child: HTMLElement[]
+): TagElement & HTMLElement => {
+	const result = document.createElement(name) as TagElement;
 	if (attributes) {
 		for (const attr in attributes) {
 			result.setAttribute(attr, attributes[attr]);
@@ -23,20 +16,11 @@ const tag = (name, attributes = {}, ...child) => {
 		result.appendChild(el);
 	}
 
-	/**
-	 * @param {keyof import("react").HTMLAttributes} name
-	 * @param {String} value
-	 * @returns {CustomHTMLElement} The element itself for chaining.
-	 */
 	result.attr = (name, value) => {
 		result.setAttribute(name, value);
 		return result;
 	};
 
-	/**
-	 * @param {String} value
-	 * @returns {CustomHTMLElement} The element itself for chaining.
-	 */
 	result.content = (value) => {
 		result.textContent = value;
 		return result;
@@ -44,10 +28,8 @@ const tag = (name, attributes = {}, ...child) => {
 
 	return result;
 };
-/**
- * @param {import("./route").Route} route
- */
-export const indexHandler = (route) => {
+
+export const indexHandler = (route: Routes) => {
 	console.log("current route: ", route.description);
 	let entry = document.getElementById("entry");
 
@@ -56,12 +38,10 @@ export const indexHandler = (route) => {
 	entry.appendChild(tag("div", { id: "new_el" }, el));
 };
 
-export const contactHandler = (
-	/** @type {import("./route").Route} */ route
-) => {
+export const contactHandler = (route: Routes) => {
 	console.log("current route: ", route.description);
 };
 
-export const aboutHandler = (/** @type {import("./route").Route} */ route) => {
+export const aboutHandler = (route: Routes) => {
 	console.log("current route: ", route.description);
 };

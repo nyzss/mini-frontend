@@ -1,19 +1,9 @@
 import { aboutHandler, contactHandler, indexHandler } from "./handler.js";
+import { Routes } from "./types.js";
 
 const urlPageTitle = "nascent";
 
-/**
- * @typedef {Object} Route
- * @property {string} page - The URL of the page.
- * @property {string} title - The title of the page.
- * @property {string} description - The description of the page.
- * @property {function} [handler] - Handler function for the route.
- */
-
-/**
- * @type {Object<string, Route>}
- */
-export const routes = {
+export const routes: Record<string, Routes> = {
 	404: {
 		page: "/pages/not_found.html",
 		title: "404 | " + urlPageTitle,
