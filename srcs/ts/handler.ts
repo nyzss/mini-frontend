@@ -3,11 +3,12 @@ import { Routes, TagElement } from "./types";
 
 const tag = <K extends keyof HTMLElementTagNameMap>(
 	name: keyof HTMLElementTagNameMap,
-	...child: HTMLElement[]
+	...child: HTMLElement[] | string[]
 ): TagElement<K> => {
 	const result = document.createElement(name) as TagElement<K>;
 	for (const el of child) {
-		result.appendChild(el);
+		if (el instanceof HTMLElement) result.appendChild(el);
+		else result.appendChild(text(el));
 	}
 
 	result.attr = (name, value) => {
@@ -23,15 +24,21 @@ const tag = <K extends keyof HTMLElementTagNameMap>(
 	return result;
 };
 
+const text = (s: string) => {
+	return document.createTextNode(s);
+};
+
 export const indexHandler = (route: Routes) => {
 	console.log("current route: ", route.description);
 	let entry = document.getElementById("entry");
 
-	let el = tag("h1")
-		.attr("id", "wow")
-		.content("this is some quality content");
-	let another = tag("a").attr("href", "/asdf").content("wowwowowowo");
-	entry.appendChild(tag("div", el, another));
+	entry.appendChild(
+		tag(
+			"div",
+			tag("h1").attr("id", "wow").content("this is some quality content"),
+			tag("a").attr("href", "/asdf").content("wowwowowowo")
+		)
+	);
 };
 
 export const contactHandler = (route: Routes) => {
