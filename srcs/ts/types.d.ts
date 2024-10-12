@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+// import { AllHTMLAttributes, HTMLAttributes } from "react";
 
 export interface Routes {
 	page: string;
@@ -7,10 +7,8 @@ export interface Routes {
 	handler?: (route: Routes) => void;
 }
 
-export interface TagElement extends HTMLElement {
-	attr: (
-		name: keyof HTMLAttributes<HTMLElement>,
-		value: string
-	) => TagElement;
-	content: (value: string) => TagElement;
-}
+export type TagElement<K extends keyof HTMLElementTagNameMap> =
+	HTMLElementTagNameMap[K] & {
+		attr: (name: string, value: string) => TagElement<K>;
+		content: (value: string) => TagElement<K>;
+	};
