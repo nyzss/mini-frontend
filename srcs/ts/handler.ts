@@ -3,21 +3,19 @@ import { Routes, TagElement } from "./types";
 
 const tag = <K extends keyof HTMLElementTagNameMap>(
 	name: keyof HTMLElementTagNameMap,
-	...child: HTMLElement[] | string[]
+	...child: (TagElement<K> | string | (TagElement<K> | string)[])[]
 ): TagElement<K> => {
 	const result = document.createElement(name) as TagElement<K>;
-	for (const el of child) {
+
+	const appendChildTag = (el: TagElement<K> | string) => {
 		if (el instanceof HTMLElement) result.appendChild(el);
 		else result.appendChild(text(el));
-	}
+	};
+
+	child.flat().forEach(appendChildTag);
 
 	result.attr = (name, value) => {
 		result.setAttribute(name as string, value);
-		return result;
-	};
-
-	result.content = (value) => {
-		result.textContent = value;
 		return result;
 	};
 
@@ -32,13 +30,15 @@ export const indexHandler = (route: Routes) => {
 	console.log("current route: ", route.description);
 	let entry = document.getElementById("entry");
 
-	entry.appendChild(
-		tag(
-			"div",
-			tag("h1", "this is the content of the h1").attr("id", "wow"),
-			tag("a", "this is the content of the ahref").attr("href", "/asdf")
+	let elements = tag(
+		"div",
+		tag("h1", "this is the content of the h1").attr("id", "wow"),
+		tag("a", "this is the content of the ahref").attr("href", "/asdf"),
+		[...Array(10)].map((_, i) =>
+			tag("h1", "this is text number: ", i.toString())
 		)
 	);
+	entry.appendChild(elements);
 };
 
 export const contactHandler = (route: Routes) => {
