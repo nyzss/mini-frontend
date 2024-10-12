@@ -35,8 +35,8 @@ export const indexHandler = (route: Routes) => {
 	entry.appendChild(
 		tag(
 			"div",
-			tag("h1").attr("id", "wow").content("this is some quality content"),
-			tag("a").attr("href", "/asdf").content("wowwowowowo")
+			tag("h1", "this is the content of the h1").attr("id", "wow"),
+			tag("a", "this is the content of the ahref").attr("href", "/asdf")
 		)
 	);
 };
