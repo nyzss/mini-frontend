@@ -1,8 +1,8 @@
 import { tag } from "./handler.js";
-import { Routes } from "./types";
+import { Ball, Paddle, Routes } from "./types";
 
 let animFrame: number;
-const ball = {
+const ball: Ball = {
 	x: 75,
 	y: 150,
 	vx: 5,
@@ -53,7 +53,7 @@ const ball = {
 	},
 };
 
-const paddleLeft = {
+const paddleLeft: Paddle = {
 	x: 0,
 	y: 50,
 	vy: 10,
@@ -66,12 +66,18 @@ const paddleLeft = {
 		upKey: "w",
 		downKey: "s",
 	},
+	points: 0,
+	init(canvas: HTMLCanvasElement) {
+		this.x = 0;
+		this.y = 50;
+		return this;
+	},
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 		return this;
 	},
-	move(ctx: CanvasRenderingContext2D) {
+	move() {
 		if (this.keys.up) this.y -= this.vy;
 		if (this.keys.down) this.y += this.vy;
 		return this;
@@ -84,11 +90,12 @@ const paddleLeft = {
 	reset(canvas: HTMLCanvasElement) {
 		this.x = 0;
 		this.y = 50;
+		this.points = 0;
 		return this;
 	},
 };
 
-const paddleRight = {
+const paddleRight: Paddle = {
 	x: 0,
 	y: 50,
 	vy: 10,
@@ -101,6 +108,7 @@ const paddleRight = {
 		upKey: "ArrowUp",
 		downKey: "ArrowDown",
 	},
+	points: 0,
 	init(canvas: HTMLCanvasElement) {
 		this.x = canvas.width - this.width;
 		this.y = 50;
@@ -111,7 +119,7 @@ const paddleRight = {
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 		return this;
 	},
-	move(ctx: CanvasRenderingContext2D) {
+	move() {
 		if (this.keys.up) this.y -= this.vy;
 		if (this.keys.down) this.y += this.vy;
 		return this;
@@ -123,6 +131,7 @@ const paddleRight = {
 	},
 	reset(canvas: HTMLCanvasElement) {
 		this.init(canvas);
+		this.points = 0;
 		return this;
 	},
 };
@@ -134,6 +143,7 @@ export const gameHandler = (route: Routes) => {
 		"game-board"
 	) as HTMLCanvasElement;
 	const ctx = gameBoard.getContext("2d");
+	const scoreText = document.getElementById("score-text");
 
 	ctx.save();
 
@@ -155,8 +165,8 @@ export const gameHandler = (route: Routes) => {
 		if (ball.x + ball.radius > gameBoard.width || ball.x - ball.radius < 0)
 			reset();
 
-		paddleLeft.draw(ctx).move(gameBoard);
-		paddleRight.draw(ctx).move(gameBoard);
+		paddleLeft.draw(ctx).move();
+		paddleRight.draw(ctx).move();
 		animFrame = window.requestAnimationFrame(draw);
 	};
 
