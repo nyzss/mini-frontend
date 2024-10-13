@@ -19,8 +19,10 @@ export const gameHandler = (route: Routes) => {
 		y: 50,
 		vx: 5,
 		vy: 2,
+		maxvX: 10,
+		maxvY: 4,
 		radius: 17.5,
-		color: "blue",
+		color: "red",
 		move() {
 			this.x += this.vx;
 			this.y += this.vy;
@@ -28,13 +30,19 @@ export const gameHandler = (route: Routes) => {
 			if (
 				this.x + this.radius >= gameBoard.width ||
 				this.x - this.radius <= 0
-			)
+			) {
+				if (this.vx > 0 && this.vx < this.maxvX) this.vx += 1;
+				else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
 				this.vx *= -1;
+			}
 			if (
 				this.y + this.radius >= gameBoard.height ||
 				this.y - this.radius <= 0
-			)
+			) {
+				if (this.vy > 0 && this.vy < this.maxvY) this.vy += 1;
+				else if (this.vy < 0 && this.vy > -this.maxvY) this.vy -= 1;
 				this.vy *= -1;
+			}
 			console.log("Ball X: ", this.x, ", velocity X: ", this.vx);
 			console.log("Ball Y: ", this.y, ", velocity Y: ", this.vy);
 			return this;
