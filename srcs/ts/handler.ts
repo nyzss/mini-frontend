@@ -8,8 +8,9 @@ const tag = <K extends keyof HTMLElementTagNameMap>(
 	const result = document.createElement(name) as TagElement<K>;
 
 	const appendChildTag = (el: TagElement<K> | string) => {
-		if (el instanceof HTMLElement) result.appendChild(el);
-		else result.appendChild(text(el));
+		if (typeof el === "string")
+			result.appendChild(document.createTextNode(el));
+		else result.appendChild(el);
 	};
 
 	child.flat().forEach(appendChildTag);
@@ -19,11 +20,12 @@ const tag = <K extends keyof HTMLElementTagNameMap>(
 		return result;
 	};
 
-	return result;
-};
+	result.onclick$ = (callback) => {
+		result.onclick = callback;
+		return result;
+	};
 
-const text = (s: string) => {
-	return document.createTextNode(s);
+	return result;
 };
 
 export const indexHandler = (route: Routes) => {
@@ -35,7 +37,9 @@ export const indexHandler = (route: Routes) => {
 		tag("h1", "this is the content of the h1").attr("id", "wow"),
 		tag("a", "this is the content of the ahref").attr("href", "/asdf"),
 		[...Array(10)].map((_, i) =>
-			tag("h1", "this is text number: ", i.toString())
+			tag("h1", "this is text number: ", i.toString()).onclick$(() =>
+				console.log(i)
+			)
 		)
 	);
 	entry.appendChild(elements);
