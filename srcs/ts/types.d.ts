@@ -28,7 +28,11 @@ export interface Ball extends GameObject {
 	maxvX: number;
 	maxvY: number;
 	radius: number;
-	move(canvas?: HTMLCanvasElement): this;
+	move(
+		canvas: HTMLCanvasElement,
+		paddleLeft: Paddle,
+		paddleRight: Paddle
+	): this;
 }
 
 export interface Paddle extends GameObject {

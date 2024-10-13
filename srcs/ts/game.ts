@@ -2,6 +2,7 @@ import { tag } from "./handler.js";
 import { Ball, Paddle, Routes } from "./types";
 
 let animFrame: number;
+
 const ball: Ball = {
 	x: 75,
 	y: 150,
@@ -11,7 +12,7 @@ const ball: Ball = {
 	maxvY: 4,
 	radius: 17.5,
 	color: "red",
-	move(canvas: HTMLCanvasElement) {
+	move(canvas: HTMLCanvasElement, paddleLeft: Paddle, paddleRight: Paddle) {
 		this.x += this.vx;
 		this.y += this.vy;
 
@@ -20,6 +21,18 @@ const ball: Ball = {
 		// 	else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
 		// 	this.vx *= -1;
 		// }
+
+		// if it touches:
+		if (this.x + this.radius >= canvas.width || this.x - this.radius <= 0) {
+			// speed incrementation, no need to bother with this for now
+			if (this.vx > 0 && this.vx < this.maxvX) this.vx += 1;
+			else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
+
+			if (this.x + this.radius >= canvas.width) paddleLeft.points += 1;
+			else paddleRight.points += 1;
+			this.vx *= -1;
+		}
+
 		if (
 			this.y + this.radius >= canvas.height ||
 			this.y - this.radius <= 0
@@ -90,7 +103,6 @@ const paddleLeft: Paddle = {
 	reset(canvas: HTMLCanvasElement) {
 		this.x = 0;
 		this.y = 50;
-		this.points = 0;
 		return this;
 	},
 };
@@ -131,11 +143,9 @@ const paddleRight: Paddle = {
 	},
 	reset(canvas: HTMLCanvasElement) {
 		this.init(canvas);
-		this.points = 0;
 		return this;
 	},
 };
-
 export const gameHandler = (route: Routes) => {
 	console.log("current route: ", route.description);
 	const entry = document.getElementById("entry");
@@ -157,11 +167,12 @@ export const gameHandler = (route: Routes) => {
 		ball.reset(gameBoard);
 		paddleLeft.reset(gameBoard);
 		paddleRight.reset(gameBoard);
+		scoreText.textContent = paddleLeft.points + " : " + paddleRight.points;
 	};
 
 	const draw = () => {
 		clear();
-		ball.draw(ctx).move(gameBoard);
+		ball.draw(ctx).move(gameBoard, paddleLeft, paddleRight);
 		if (ball.x + ball.radius > gameBoard.width || ball.x - ball.radius < 0)
 			reset();
 
