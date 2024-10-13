@@ -2,7 +2,7 @@ import { routes } from "./route.js";
 
 document.addEventListener("click", (e) => {
 	const { target } = e;
-	if (!(target instanceof Element) || !target.matches("nav a")) {
+	if (!(target instanceof HTMLElement) || target.id !== "navigation") {
 		return;
 	}
 	e.preventDefault();
