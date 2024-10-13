@@ -4,7 +4,7 @@ import { Routes } from "./types";
 let animFrame: number;
 const ball = {
 	x: 75,
-	y: 50,
+	y: 150,
 	vx: 5,
 	vy: 2,
 	maxvX: 10,
@@ -32,6 +32,11 @@ const ball = {
 		// console.log("Ball Y: ", this.y, ", velocity Y: ", this.vy);
 		return this;
 	},
+	init(canvas: HTMLCanvasElement) {
+		this.x = canvas.width / 2;
+		this.y = canvas.height / 2;
+		return this;
+	},
 	draw(ctx: CanvasRenderingContext2D) {
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
@@ -40,11 +45,11 @@ const ball = {
 		ctx.fill();
 		return this;
 	},
-	reset() {
-		this.x = 50;
-		this.y = 75;
+	reset(canvas: HTMLCanvasElement) {
+		this.init(canvas);
 		this.vx = 5;
 		this.vy = 2;
+		return this;
 	},
 };
 
@@ -69,14 +74,17 @@ const paddleLeft = {
 	move(ctx: CanvasRenderingContext2D) {
 		if (this.keys.up) this.y -= this.vy;
 		if (this.keys.down) this.y += this.vy;
+		return this;
 	},
 	keyHandler(event: KeyboardEvent, value: boolean) {
 		if (event.key == this.keys.upKey) this.keys.up = value;
 		if (event.key == this.keys.downKey) this.keys.down = value;
+		return this;
 	},
-	reset() {
+	reset(canvas: HTMLCanvasElement) {
 		this.x = 0;
 		this.y = 50;
+		return this;
 	},
 };
 
@@ -93,27 +101,29 @@ const paddleRight = {
 		upKey: "ArrowUp",
 		downKey: "ArrowDown",
 	},
-	draw(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+	init(canvas: HTMLCanvasElement) {
+		this.x = canvas.width - this.width;
+		this.y = 50;
+		return this;
+	},
+	draw(ctx: CanvasRenderingContext2D) {
 		ctx.fillStyle = this.color;
-		ctx.fillRect(
-			canvas.width - this.width,
-			this.y,
-			this.width,
-			this.height
-		);
+		ctx.fillRect(this.x, this.y, this.width, this.height);
 		return this;
 	},
 	move(ctx: CanvasRenderingContext2D) {
 		if (this.keys.up) this.y -= this.vy;
 		if (this.keys.down) this.y += this.vy;
+		return this;
 	},
 	keyHandler(event: KeyboardEvent, value: boolean) {
 		if (event.key == this.keys.upKey) this.keys.up = value;
 		if (event.key == this.keys.downKey) this.keys.down = value;
+		return this;
 	},
 	reset(canvas: HTMLCanvasElement) {
-		this.x = canvas.width - this.width;
-		this.y = 50;
+		this.init(canvas);
+		return this;
 	},
 };
 
@@ -134,8 +144,8 @@ export const gameHandler = (route: Routes) => {
 	};
 
 	const reset = () => {
-		ball.reset();
-		paddleLeft.reset();
+		ball.reset(gameBoard);
+		paddleLeft.reset(gameBoard);
 		paddleRight.reset(gameBoard);
 	};
 
@@ -146,7 +156,7 @@ export const gameHandler = (route: Routes) => {
 			reset();
 
 		paddleLeft.draw(ctx).move(gameBoard);
-		paddleRight.draw(gameBoard, ctx).move(gameBoard);
+		paddleRight.draw(ctx).move(gameBoard);
 		animFrame = window.requestAnimationFrame(draw);
 	};
 
@@ -168,8 +178,9 @@ export const gameHandler = (route: Routes) => {
 		paddleRight.keyHandler(e, false);
 	});
 
-	ball.draw(ctx);
+	ball.init(gameBoard).draw(ctx);
 	paddleLeft.draw(ctx);
+	paddleRight.init(gameBoard).draw(ctx);
 
 	const elements = tag("div", "hello world!");
 	entry.appendChild(elements);
