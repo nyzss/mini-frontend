@@ -15,11 +15,11 @@ const ball = {
 		this.x += this.vx;
 		this.y += this.vy;
 
-		if (this.x + this.radius >= canvas.width || this.x - this.radius <= 0) {
-			if (this.vx > 0 && this.vx < this.maxvX) this.vx += 1;
-			else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
-			this.vx *= -1;
-		}
+		// if (this.x + this.radius >= canvas.width || this.x - this.radius <= 0) {
+		// 	if (this.vx > 0 && this.vx < this.maxvX) this.vx += 1;
+		// 	else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
+		// 	this.vx *= -1;
+		// }
 		if (
 			this.y + this.radius >= canvas.height ||
 			this.y - this.radius <= 0
@@ -39,6 +39,12 @@ const ball = {
 		ctx.fillStyle = this.color;
 		ctx.fill();
 		return this;
+	},
+	reset() {
+		this.x = 50;
+		this.y = 75;
+		this.vx = 5;
+		this.vy = 2;
 	},
 };
 
@@ -67,6 +73,10 @@ const paddleLeft = {
 	keyHandler(event: KeyboardEvent, value: boolean) {
 		if (event.key == this.keys.upKey) this.keys.up = value;
 		if (event.key == this.keys.downKey) this.keys.down = value;
+	},
+	reset() {
+		this.x = 0;
+		this.y = 50;
 	},
 };
 
@@ -101,6 +111,10 @@ const paddleRight = {
 		if (event.key == this.keys.upKey) this.keys.up = value;
 		if (event.key == this.keys.downKey) this.keys.down = value;
 	},
+	reset(canvas: HTMLCanvasElement) {
+		this.x = canvas.width - this.width;
+		this.y = 50;
+	},
 };
 
 export const gameHandler = (route: Routes) => {
@@ -111,18 +125,26 @@ export const gameHandler = (route: Routes) => {
 	) as HTMLCanvasElement;
 	const ctx = gameBoard.getContext("2d");
 
-	// console.log(gameBoard);
-	// console.log(ctx);
+	ctx.save();
 
 	const clear = () => {
 		// ctx.clearRect(0, 0, gameBoard.width, gameBoard.height);
-		ctx.fillStyle = "rgb(255 255 255 / 30%)";
+		ctx.fillStyle = "rgb(0 0 0 / 30%)";
 		ctx.fillRect(0, 0, gameBoard.width, gameBoard.height);
+	};
+
+	const reset = () => {
+		ball.reset();
+		paddleLeft.reset();
+		paddleRight.reset(gameBoard);
 	};
 
 	const draw = () => {
 		clear();
 		ball.draw(ctx).move(gameBoard);
+		if (ball.x + ball.radius > gameBoard.width || ball.x - ball.radius < 0)
+			reset();
+
 		paddleLeft.draw(ctx).move(gameBoard);
 		paddleRight.draw(gameBoard, ctx).move(gameBoard);
 		animFrame = window.requestAnimationFrame(draw);
