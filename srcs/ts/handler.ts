@@ -1,7 +1,6 @@
-import { HTMLAttributes } from "react";
 import { Routes, TagElement } from "./types";
 
-const tag = <K extends keyof HTMLElementTagNameMap>(
+export const tag = <K extends keyof HTMLElementTagNameMap>(
 	name: keyof HTMLElementTagNameMap,
 	...child: (TagElement<K> | string | (TagElement<K> | string)[])[]
 ): TagElement<K> => {

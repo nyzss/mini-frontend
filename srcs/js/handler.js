@@ -1,67 +1,33 @@
-/**
- * @typedef {Object} CustomHTMLElement
- * @property {function(string, string): CustomHTMLElement} [attr] - Method to set an attribute
- * @property {function(string): CustomHTMLElement} [content] - Method to set an attribute
- */
-
-/**
- * @param {keyof HTMLElementTagNameMap} name
- * @param {import("react").HTMLAttributes} [attributes={}]
- * @param  {...HTMLElement} child
- */
-const tag = (name, attributes = {}, ...child) => {
-	/**
-	 * @type {HTMLElement & CustomHTMLElement}
-	 */
-	const result = document.createElement(name);
-	if (attributes) {
-		for (const attr in attributes) {
-			result.setAttribute(attr, attributes[attr]);
-		}
-	}
-	for (const el of child) {
-		result.appendChild(el);
-	}
-
-	/**
-	 * @param {keyof import("react").HTMLAttributes} name
-	 * @param {String} value
-	 * @returns {CustomHTMLElement} The element itself for chaining.
-	 */
-	result.attr = (name, value) => {
-		result.setAttribute(name, value);
-		return result;
-	};
-
-	/**
-	 * @param {String} value
-	 * @returns {CustomHTMLElement} The element itself for chaining.
-	 */
-	result.content = (value) => {
-		result.textContent = value;
-		return result;
-	};
-
-	return result;
+export const tag = (name, ...child) => {
+    const result = document.createElement(name);
+    const appendChildTag = (el) => {
+        if (typeof el === "string")
+            result.appendChild(document.createTextNode(el));
+        else
+            result.appendChild(el);
+    };
+    child.flat().forEach(appendChildTag);
+    result.attr = (name, value) => {
+        result.setAttribute(name, value);
+        return result;
+    };
+    result.onclick$ = (callback) => {
+        result.onclick = callback;
+        return result;
+    };
+    return result;
 };
-/**
- * @param {import("./route").Route} route
- */
 export const indexHandler = (route) => {
-	console.log("current route: ", route.description);
-	let entry = document.getElementById("entry");
-
-	let el = tag("h1");
-	el.textContent = "hello world";
-	entry.appendChild(tag("div", { id: "new_el" }, el));
+    console.log("current route: ", route.description);
+    let entry = document.getElementById("entry");
+    let elements = tag("div", tag("h1", "this is the content of the h1").attr("id", "wow"), tag("a", "this is the content of the ahref")
+        .attr("href", "/asdf")
+        .attr("id", "navigation"), [...Array(10)].map((_, i) => tag("h1", "this is text number: ", i.toString()).onclick$(() => console.log(i))));
+    entry.appendChild(elements);
 };
-
-export const contactHandler = (
-	/** @type {import("./route").Route} */ route
-) => {
-	console.log("current route: ", route.description);
+export const contactHandler = (route) => {
+    console.log("current route: ", route.description);
 };
-
-export const aboutHandler = (/** @type {import("./route").Route} */ route) => {
-	console.log("current route: ", route.description);
+export const aboutHandler = (route) => {
+    console.log("current route: ", route.description);
 };

@@ -1,3 +1,4 @@
+import { gameHandler } from "./game.js";
 import { aboutHandler, contactHandler, indexHandler } from "./handler.js";
 import { Routes } from "./types.js";
 
@@ -14,6 +15,12 @@ export const routes: Record<string, Routes> = {
 		title: "Home | " + urlPageTitle,
 		description: "This is the home page",
 		handler: indexHandler,
+	},
+	"/play": {
+		page: "/pages/game.html",
+		title: "Pong Game | " + urlPageTitle,
+		description: "Pong Game",
+		handler: gameHandler,
 	},
 	"/about": {
 		page: "/pages/about.html",
