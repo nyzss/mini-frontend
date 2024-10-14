@@ -6,10 +6,10 @@ let animFrame: number;
 const ball: Ball = {
 	x: 75,
 	y: 150,
-	vx: 5,
-	vy: 2,
-	maxvX: 10,
-	maxvY: 4,
+	vx: 4,
+	vy: 1.75,
+	maxvX: 4,
+	maxvY: 1.75,
 	radius: 17.5,
 	color: "red",
 	move(canvas: HTMLCanvasElement, paddleLeft: Paddle, paddleRight: Paddle) {
@@ -21,6 +21,16 @@ const ball: Ball = {
 		// 	else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
 		// 	this.vx *= -1;
 		// }
+
+		if (
+			(this.x + this.radius >= paddleRight.x &&
+				this.y >= paddleRight.y &&
+				this.y <= paddleRight.y + paddleRight.height) ||
+			(this.x - this.radius <= paddleLeft.x + paddleLeft.width &&
+				this.y >= paddleLeft.y &&
+				this.y <= paddleLeft.y + paddleLeft.height)
+		)
+			this.vx *= -1;
 
 		// if it touches:
 		if (this.x + this.radius >= canvas.width || this.x - this.radius <= 0) {
