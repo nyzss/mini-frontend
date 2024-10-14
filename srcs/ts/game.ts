@@ -3,14 +3,16 @@ import { Ball, Paddle, Routes } from "./types";
 
 let animFrame: number;
 
+const PADDLE_VELOCITY = 8;
+
 const ball: Ball = {
 	x: 75,
 	y: 150,
-	vx: 4,
-	vy: 1.75,
-	maxvX: 4,
-	maxvY: 1.75,
-	radius: 17.5,
+	vx: 3,
+	vy: 1.25,
+	maxvX: 3,
+	maxvY: 1.25,
+	radius: 15,
 	color: "red",
 	move(canvas: HTMLCanvasElement, paddleLeft: Paddle, paddleRight: Paddle) {
 		this.x += this.vx;
@@ -32,15 +34,15 @@ const ball: Ball = {
 		)
 			this.vx *= -1;
 
-		// if it touches:
+		// if it touches up and down border:
 		if (this.x + this.radius >= canvas.width || this.x - this.radius <= 0) {
 			// speed incrementation, no need to bother with this for now
-			if (this.vx > 0 && this.vx < this.maxvX) this.vx += 1;
-			else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
+			// if (this.vx > 0 && this.vx < this.maxvX) this.vx += 1;
+			// else if (this.vx < 0 && this.vx > -this.maxvX) this.vx -= 1;
 
 			if (this.x + this.radius >= canvas.width) paddleLeft.points += 1;
-			else paddleRight.points += 1;
-			this.vx *= -1;
+			else if (this.x - this.radius <= 0) paddleRight.points += 1;
+			else this.vx *= -1;
 		}
 
 		if (
@@ -79,8 +81,8 @@ const ball: Ball = {
 const paddleLeft: Paddle = {
 	x: 0,
 	y: 50,
-	vy: 10,
-	width: 50,
+	vy: PADDLE_VELOCITY,
+	width: 25,
 	height: 100,
 	color: "blue",
 	keys: {
@@ -92,7 +94,7 @@ const paddleLeft: Paddle = {
 	points: 0,
 	init(canvas: HTMLCanvasElement) {
 		this.x = 0;
-		this.y = 50;
+		this.y = canvas.height / 2;
 		return this;
 	},
 	draw(ctx: CanvasRenderingContext2D) {
@@ -120,8 +122,8 @@ const paddleLeft: Paddle = {
 const paddleRight: Paddle = {
 	x: 0,
 	y: 50,
-	vy: 10,
-	width: 50,
+	vy: PADDLE_VELOCITY,
+	width: 25,
 	height: 100,
 	color: "green",
 	keys: {
@@ -133,7 +135,7 @@ const paddleRight: Paddle = {
 	points: 0,
 	init(canvas: HTMLCanvasElement) {
 		this.x = canvas.width - this.width;
-		this.y = 50;
+		this.y = canvas.height / 2;
 		return this;
 	},
 	draw(ctx: CanvasRenderingContext2D) {
@@ -147,8 +149,16 @@ const paddleRight: Paddle = {
 		return this;
 	},
 	keyHandler(event: KeyboardEvent, value: boolean) {
-		if (event.key == this.keys.upKey) this.keys.up = value;
-		if (event.key == this.keys.downKey) this.keys.down = value;
+		if (event.key == this.keys.upKey) {
+			event.preventDefault();
+
+			this.keys.up = value;
+		}
+		if (event.key == this.keys.downKey) {
+			event.preventDefault();
+
+			this.keys.down = value;
+		}
 		return this;
 	},
 	reset(canvas: HTMLCanvasElement) {
