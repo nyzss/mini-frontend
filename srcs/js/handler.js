@@ -22,7 +22,7 @@ export const indexHandler = (route) => {
     let entry = document.getElementById("entry");
     let elements = tag("div", tag("h1", "this is the content of the h1").attr("id", "wow"), tag("a", "this is the content of the ahref")
         .attr("href", "/asdf")
-        .attr("id", "navigation"), [...Array(10)].map((_, i) => tag("h1", "this is text number: ", i.toString()).onclick$(() => console.log(i))));
+        .attr("id", "navigation"), [...Array(100)].map((_, i) => tag("h1", "this is text number: ", i.toString()).onclick$(() => console.log(i))));
     entry.appendChild(elements);
 };
 export const contactHandler = (route) => {

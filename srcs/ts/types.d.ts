@@ -32,7 +32,7 @@ export interface Ball extends GameObject {
 		canvas: HTMLCanvasElement,
 		paddleLeft: Paddle,
 		paddleRight: Paddle
-	): this;
+	): this | boolean;
 }
 
 export interface Paddle extends GameObject {
@@ -46,6 +46,6 @@ export interface Paddle extends GameObject {
 		downKey: string;
 	};
 	points: number;
-	move(): this;
+	move(canvas: HTMLCanvasElement): this;
 	keyHandler(event: KeyboardEvent, value: boolean): this;
 }
